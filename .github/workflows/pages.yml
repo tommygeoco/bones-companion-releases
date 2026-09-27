@@ -1,0 +1,69 @@
+# The Bones Companion download page on GitHub Pages.
+# Lives in tommygeoco/bones-companion-releases as .github/workflows/pages.yml; staged
+# there by site/tools/stage-pages.sh in the private repo (never edit it in place).
+#
+# It writes the latest release into the page (release-links.mjs) and publishes only
+# that built copy: the page, its assets and 404.html. No build tools, no README.
+# It runs when a release is published, edited or removed, when the page changes, by
+# hand, and once a day. Releases published with another workflow's GITHUB_TOKEN don't
+# raise release events, so the daily run (or `gh workflow run pages.yml`) catches those.
+name: Pages
+
+on:
+  release:
+    types: [published, released, edited, unpublished, deleted]
+  push:
+    branches: [main]
+    paths: ['site/**', '.github/pages/**', '.github/workflows/pages.yml']
+  schedule:
+    - cron: '17 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+      # The downloads say "coming soon" until the repo variable DOWNLOADS_LIVE is "true",
+      # which is set once the builds are signed and notarized.
+      - name: Write the latest release into the page
+        run: |
+          if [ "$DOWNLOADS_LIVE" = "true" ]; then
+            node .github/pages/release-links.mjs site _site
+          else
+            node .github/pages/release-links.mjs site _site --soon
+          fi
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          DOWNLOADS_LIVE: ${{ vars.DOWNLOADS_LIVE }}
+      - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

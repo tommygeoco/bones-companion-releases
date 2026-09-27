@@ -1,0 +1,992 @@
+<!doctype html>
+<html lang="en" data-pick="none" data-mac="soon" data-win="soon">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bones Companion · An AI companion for World of Warcraft: Forever</title>
+<meta name="description" content="Bones is an AI companion for World of Warcraft: Forever. Ask what to do next and get a route on your map or advice on your gear, right in the game, with the AI you choose. No Bones Companion account, no tracking.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'unsafe-inline'; img-src 'self' data:; font-src 'self'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0b0e1a">
+<link rel="canonical" href="https://tommygeoco.github.io/bones-companion-releases/">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Bones Companion">
+<meta property="og:title" content="Bones Companion · Never quest alone">
+<meta property="og:description" content="An AI companion for World of Warcraft: Forever. Ask what to do next and get a route on your map or advice on your gear, right in the game, with the AI you choose. No Bones Companion account, no tracking.">
+<meta property="og:url" content="https://tommygeoco.github.io/bones-companion-releases/">
+<meta property="og:image" content="https://tommygeoco.github.io/bones-companion-releases/assets/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Bones Companion: “Never quest alone.” An AI companion for World of Warcraft: Forever, with no Bones Companion account, your key on your computer and no tracking. Beside it, the chat window and the Bones HUD in game, and Bones, a skull with glowing eyes.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" href="assets/fonts/alegreya-800.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/alegreya-sans-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/alegreya-sans-700.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/cinzel-700.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+/* Fonts: subset woff2 (OFL, licenses beside them), with metric-matched local
+   fallbacks so the swap doesn't move anything. */
+@font-face{font-family:"Alegreya";src:url(assets/fonts/alegreya-800.woff2) format("woff2");font-weight:800;font-display:swap}
+@font-face{font-family:"Alegreya Sans";src:url(assets/fonts/alegreya-sans-400.woff2) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Alegreya Sans";src:url(assets/fonts/alegreya-sans-700.woff2) format("woff2");font-weight:700;font-display:swap}
+@font-face{font-family:"Cinzel";src:url(assets/fonts/cinzel-700.woff2) format("woff2");font-weight:700;font-display:swap}
+@font-face{font-family:"Alegreya fb";src:local("Georgia Bold"),local("Georgia-Bold");font-weight:800;size-adjust:80.73%;ascent-override:125.85%;descent-override:42.73%;line-gap-override:0%}
+@font-face{font-family:"Alegreya Sans fb";src:local("Arial"),local("ArialMT");font-weight:400;size-adjust:86.01%;ascent-override:93.01%;descent-override:23.25%;line-gap-override:0%}
+@font-face{font-family:"Alegreya Sans fb";src:local("Arial Bold"),local("Arial-BoldMT");font-weight:700;size-adjust:81.65%;ascent-override:97.97%;descent-override:24.49%;line-gap-override:0%}
+@font-face{font-family:"Cinzel fb";src:local("Georgia Bold"),local("Georgia-Bold");font-weight:700;size-adjust:94.92%;ascent-override:102.83%;descent-override:39.19%;line-gap-override:0%}
+
+:root{
+  color-scheme:dark;
+  --night-0:#06080f;--night-1:#0b0e1a;--night-2:#11152a;--night-3:#191f3b;--night-4:#242b4f;
+  --text:#f1e9d8;--text-2:#cfc5b2;--text-3:#a39b8c;
+  --gold-1:#fff1c6;--gold-2:#ffdb82;--gold-3:#f2b544;--gold-4:#c98a2b;--gold-5:#6e440c;
+  --ember:#ff9a4a;--ok:#8fe3a8;
+  --line:rgba(242,181,68,.2);--line-2:rgba(242,181,68,.42);
+  --parch-1:#fbf3df;--parch-2:#f2e3c3;--parch-3:#e3cc9f;--parch-edge:#d2b47d;
+  --ink:#2b1d10;--ink-2:#5c4631;--ink-gold:#7a4f0e;--seal:#8e2317;
+  --focus:#ffdb82;
+  --f-display:"Alegreya","Alegreya fb",Georgia,serif;
+  --f-rune:"Cinzel","Cinzel fb",Georgia,serif;
+  --f-body:"Alegreya Sans","Alegreya Sans fb",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --wrap:1240px;--gutter:clamp(16px,4vw,48px);
+  --r-1:10px;--r-2:16px;--r-3:22px;
+  --shadow-1:0 1px 0 rgba(255,255,255,.04) inset,0 18px 40px -18px rgba(0,0,0,.7);
+  --noise:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .36 0 0 0 0 .25 0 0 0 0 .12 0 0 0 .11 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-behavior:smooth;scroll-padding-top:88px}
+body{margin:0;background:var(--night-1);color:var(--text);font:400 1.1875rem/1.6 var(--f-body);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}
+img,svg,picture{display:block;max-width:100%}
+img{height:auto}
+a{color:var(--gold-2);text-decoration-thickness:1px;text-underline-offset:.2em}
+a:hover{color:var(--gold-1)}
+:focus-visible{outline:3px solid var(--focus);outline-offset:3px;border-radius:6px}
+h1,h2,h3,h4{font-family:var(--f-display);font-weight:800;line-height:1.08;margin:0;letter-spacing:-.005em;text-wrap:balance}
+p{margin:0}
+ul,ol{margin:0;padding:0}
+button{font:inherit;color:inherit}
+[hidden]{display:none!important}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.wrap{width:100%;max-width:var(--wrap);margin-inline:auto;padding-inline:var(--gutter)}
+.skip{position:absolute;left:12px;top:-60px;z-index:100;background:var(--gold-2);color:#1d1204;padding:12px 18px;border-radius:10px;font-weight:700;text-decoration:none}
+.skip:focus{top:12px}
+.eyebrow{font:700 .8125rem/1.3 var(--f-rune);letter-spacing:.16em;text-transform:uppercase;color:var(--gold-3)}
+.eyebrow .reg{font-family:var(--f-body);font-weight:500;font-size:1.05em;line-height:0;vertical-align:.32em;letter-spacing:0;margin-left:.06em}
+.section{padding-block:clamp(64px,8vw,112px);position:relative}
+.section-head{max-width:760px;margin-inline:auto;text-align:center;display:grid;gap:14px;margin-bottom:clamp(36px,5vw,60px)}
+.section-head h2{font-size:clamp(2.125rem,1.5rem + 2.6vw,3.375rem);color:var(--gold-1)}
+.section-head .lead{font-size:clamp(1.1875rem,1.1rem + .35vw,1.3125rem);color:var(--text-2);max-width:40em;margin-inline:auto}
+
+/* Buttons */
+.btn{--h:56px;display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:var(--h);padding:10px 26px;border-radius:14px;font:700 1.125rem/1.2 var(--f-body);text-decoration:none;border:0;cursor:pointer;transition:transform .15s ease,box-shadow .15s ease,background-color .15s ease}
+.btn-gold{color:#241305;background:linear-gradient(180deg,#ffe7a6 0%,#f7c257 46%,#dc9a2c 100%);box-shadow:0 0 0 1px #8a5a12 inset,0 1px 0 rgba(255,255,255,.55) inset,0 10px 22px -10px rgba(0,0,0,.85)}
+.btn-gold:hover{color:#241305;transform:translateY(-1px);box-shadow:0 0 0 1px #8a5a12 inset,0 1px 0 rgba(255,255,255,.55) inset,0 14px 28px -10px rgba(0,0,0,.95)}
+.btn-gold:active{transform:translateY(0)}
+.btn-ghost{color:var(--gold-1);background:rgba(255,255,255,.04);box-shadow:0 0 0 1px var(--line-2) inset}
+.btn-ghost:hover{color:var(--gold-1);background:rgba(255,255,255,.08)}
+.btn-dl{flex-direction:column;align-items:flex-start;gap:2px;padding:12px 28px 12px 64px;position:relative;min-height:68px;text-align:left}
+.btn-dl svg{position:absolute;left:24px;top:50%;width:26px;height:26px;margin-top:-13px}
+.btn-dl .btn-label{font-size:1.1875rem}
+.btn-dl .btn-meta{font-weight:400;font-size:.9375rem;opacity:.86}
+.btn-small{--h:44px;padding:8px 18px;font-size:1rem;border-radius:11px}
+
+/* Header */
+.top{position:sticky;top:0;z-index:50;background:rgba(11,14,26,.8);-webkit-backdrop-filter:blur(12px) saturate(1.2);backdrop-filter:blur(12px) saturate(1.2);border-bottom:1px solid rgba(242,181,68,.12)}
+.top-in{display:flex;align-items:center;gap:20px;min-height:72px}
+.brand{display:inline-flex;align-items:center;gap:12px;color:var(--gold-1);text-decoration:none;min-height:48px;margin-right:auto}
+.brand svg{width:46px;height:46px;flex:none}
+.brand-name{font:700 1.1875rem/1 var(--f-rune);letter-spacing:.06em}
+.nav ul{list-style:none;display:flex;gap:4px}
+.nav a{display:inline-flex;align-items:center;min-height:44px;padding:0 12px;color:var(--text-2);text-decoration:none;border-radius:10px;font-size:1.0625rem}
+.nav a:hover{color:var(--gold-1);background:rgba(255,255,255,.05)}
+
+/* Hero */
+.hero{position:relative;overflow:hidden;padding-block:clamp(36px,6vw,84px) clamp(64px,8vw,112px);background:
+  radial-gradient(900px 520px at 78% 38%,rgba(255,168,84,.16),transparent 62%),
+  radial-gradient(1100px 700px at 10% -10%,rgba(98,86,190,.26),transparent 60%),
+  linear-gradient(180deg,#0a0d1b 0%,#10142a 60%,var(--night-1) 100%)}
+.hero::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.55;background-image:
+  radial-gradient(1.2px 1.2px at 12% 18%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 27% 8%,#fff 50%,transparent 51%),
+  radial-gradient(1.4px 1.4px at 41% 22%,#ffe9b0 50%,transparent 51%),radial-gradient(1px 1px at 55% 6%,#fff 50%,transparent 51%),
+  radial-gradient(1.2px 1.2px at 7% 44%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 33% 38%,#fff 50%,transparent 51%),
+  radial-gradient(1.3px 1.3px at 64% 14%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 92% 10%,#fff 50%,transparent 51%),
+  radial-gradient(1.1px 1.1px at 86% 30%,#ffe9b0 50%,transparent 51%),radial-gradient(1px 1px at 20% 70%,#fff 50%,transparent 51%)}
+.hero .wrap{max-width:1400px}
+.hero-grid{display:grid;grid-template-columns:minmax(0,470px) minmax(0,1fr);gap:clamp(32px,4vw,56px);align-items:center;position:relative}
+.hero-copy{display:grid;gap:22px;justify-items:start}
+.hero h1{font-size:clamp(2.875rem,1.5rem + 5.2vw,5.25rem);line-height:.98;padding-bottom:.06em;color:var(--gold-2);text-shadow:0 2px 0 rgba(0,0,0,.35)}
+.hero .lead{font-size:clamp(1.1875rem,1.08rem + .5vw,1.375rem);color:var(--text-2);max-width:31em}
+.trust{list-style:none;display:flex;flex-wrap:wrap;gap:8px 18px;color:var(--text-2);font-size:1rem}
+.trust li{display:inline-flex;align-items:center;gap:8px}
+.trust svg{width:18px;height:18px;color:var(--ok);flex:none}
+
+/* The download block: which parts show is set by <html data-pick|data-mac|data-win>
+   (the build writes the release's state; app.js adds this computer's system). */
+.get{display:grid;gap:14px;justify-items:start;width:100%}
+.dl-row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.get .dl,.get-other>span,.get-soon,.get-mobile,.mobile-links,.linux-note{display:none}
+[data-pick="mac"] .get .dl-mac,[data-pick="win"] .get .dl-win{display:inline-flex}
+[data-pick="choose"][data-mac="ready"] .get .dl-mac,[data-pick="choose"][data-win="ready"] .get .dl-win{display:inline-flex}
+[data-pick="mac"][data-win="ready"] .get-other .other-win,[data-pick="win"][data-mac="ready"] .get-other .other-mac,
+[data-pick="mac"][data-win="soon"] .get-other .other-win-soon,[data-pick="win"][data-mac="soon"] .get-other .other-mac-soon{display:inline}
+.get-other{color:var(--text-3);font-size:1rem}
+.get-other .more{display:inline!important}
+[data-pick="none"] .get-other{display:none}
+[data-pick="none"] .get-soon{display:grid}
+[data-os="linux"] .linux-note{display:block}
+.get-soon{gap:12px;justify-items:start;padding:18px 20px;border-radius:var(--r-2);background:rgba(255,255,255,.035);box-shadow:0 0 0 1px var(--line) inset;max-width:34em}
+.get-soon .soon-title{font:700 .8125rem/1 var(--f-rune);letter-spacing:.14em;text-transform:uppercase;color:var(--gold-3)}
+.get-soon p{color:var(--text-2);font-size:1.0625rem}
+.get-soon .btns{display:flex;flex-wrap:wrap;gap:10px}
+.get-soon .btn-ghost{--h:52px;font-size:1.0625rem;padding:8px 20px}
+.get-soon .btn-ghost svg{width:20px;height:20px}
+.get-soon .soon-help{font-size:1rem;color:var(--text-3)}
+.soon-win,.soon-mac,.soon-other{display:none}
+[data-soon-for="win"] .soon-win,[data-soon-for="mac"] .soon-mac{display:inline}
+[data-soon-for] .soon-all{display:none}
+[data-soon-for] .soon-other{display:block}
+[data-pick="none"] .hero .get-mobile,[data-pick="none"] .closing .get-mobile{display:none!important}
+.get-mobile{gap:12px;padding:18px 20px;border-radius:var(--r-2);background:rgba(255,255,255,.035);box-shadow:0 0 0 1px var(--line) inset;width:100%;max-width:34em}
+.get-mobile .mobile-title{font:700 1.1875rem/1.3 var(--f-body);color:var(--gold-1)}
+.get-mobile p{color:var(--text-2);font-size:1.0625rem}
+.get-mobile .btns{display:flex;flex-wrap:wrap;gap:10px}
+.get-mobile .btn{--h:52px;font-size:1.0625rem;padding:8px 20px}
+.get-mobile .btn svg{width:20px;height:20px}
+.mobile-links{color:var(--text-3);font-size:1rem}
+.mobile-links>span{display:none}
+[data-mac="ready"][data-win="ready"] .mob-both,[data-mac="ready"][data-win="soon"] .mob-mac,[data-mac="soon"][data-win="ready"] .mob-win{display:inline}
+.cost-line{color:var(--text-3);font-size:1rem}
+.cost-line strong{color:var(--text-2);font-weight:700}
+.get-other a,.mobile-links a,.cost-line a,.soon-other a,.release-line a,.verify a,.faq .answer a{display:inline-block;padding-block:12px;margin-block:-12px}
+@media (hover:none) and (pointer:coarse){
+  html:not([data-device="desktop"]) .get .dl,html:not([data-device="desktop"]) .get-other{display:none!important}
+  html:not([data-device="desktop"]) .get-mobile{display:grid}
+  html:not([data-device="desktop"])[data-pick="mac"] .mobile-links,html:not([data-device="desktop"])[data-pick="win"] .mobile-links{display:block}
+}
+[data-device="mobile"] .get .dl,[data-device="mobile"] .get-other{display:none!important}
+[data-device="mobile"] .get-mobile{display:grid}
+[data-device="mobile"][data-pick="mac"] .mobile-links,[data-device="mobile"][data-pick="win"] .mobile-links{display:block}
+
+/* The stage: an original game world, with Bones's real window and HUD in it. */
+.stage{position:relative;margin:0;aspect-ratio:6/5;border-radius:var(--r-3);isolation:isolate}
+.stage-frame{position:absolute;inset:0;border-radius:inherit;overflow:hidden;box-shadow:0 0 0 1px rgba(255,219,130,.55),0 0 0 7px #120e0a,0 0 0 8px rgba(255,219,130,.3),0 50px 90px -30px rgba(0,0,0,.85)}
+.stage-scene{position:absolute;inset:0;width:100%;height:100%}
+.stage-window,.stage-hud{position:absolute;filter:drop-shadow(0 18px 26px rgba(0,0,0,.55))}
+.stage-window{left:3%;bottom:3%;width:53%;z-index:2}
+.stage-hud{right:3%;top:3%;width:40%;z-index:1}
+.stage-window img{aspect-ratio:884/960;width:100%}
+.stage-hud img{aspect-ratio:604/704;width:100%}
+.stage-bones{position:absolute;right:-3%;bottom:-6%;width:18%;z-index:3;filter:drop-shadow(0 14px 18px rgba(0,0,0,.6))}
+.stage-bones svg{width:100%;height:auto;animation:bob 5s ease-in-out infinite}
+.stage figcaption{position:absolute;inset:auto 0 0 0}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-6px) rotate(1deg)}}
+.tw{animation:twinkle 4s ease-in-out infinite}
+.tw:nth-child(2n){animation-delay:-1.3s}.tw:nth-child(3n){animation-delay:-2.6s;animation-duration:5.5s}
+@keyframes twinkle{0%,100%{opacity:.9}50%{opacity:.25}}
+.route{stroke-dasharray:1 16;animation:march 1.6s linear infinite}
+@keyframes march{to{stroke-dashoffset:-17}}
+.pulse{transform-box:fill-box;transform-origin:center;animation:pulse 2.4s ease-out infinite}
+@keyframes pulse{0%{transform:scale(.55);opacity:.95}100%{transform:scale(1.9);opacity:0}}
+.eye{animation:glow 3.2s ease-in-out infinite}
+@keyframes glow{0%,100%{opacity:1}45%{opacity:.72}55%{opacity:.95}}
+
+/* Rune divider */
+.rune-rule{display:flex;align-items:center;gap:18px;color:var(--gold-4);max-width:520px;margin:0 auto}
+.rune-rule::before,.rune-rule::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--line-2),transparent)}
+.rune-rule svg{width:34px;height:34px;flex:none}
+
+/* What Bones does */
+.what{background:linear-gradient(180deg,var(--night-1),#0d1122 50%,var(--night-1))}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+.card{display:grid;grid-template-rows:280px 1fr;border-radius:var(--r-3);background:linear-gradient(180deg,var(--night-2),#0e1224);box-shadow:0 0 0 1px var(--line) inset,var(--shadow-1);overflow:hidden}
+.card-art{position:relative;display:grid;place-items:center;padding:20px 18px;background:radial-gradient(120% 90% at 50% 0%,rgba(255,190,100,.12),transparent 70%),#0c1020;border-bottom:1px solid var(--line)}
+.card-body{padding:22px 22px 26px;display:grid;gap:8px;align-content:start}
+.card h3{font-size:1.5rem;color:var(--gold-1)}
+.card-body p{color:var(--text-2);font-size:1.0625rem}
+
+/* In-game panels drawn in HTML (the card visuals): the addon's look, larger type */
+.gp{width:100%;max-width:272px;border-radius:6px;background:#15120e;box-shadow:0 0 0 2px #7d5f2e,0 0 0 3px #2a2116,0 16px 30px -12px rgba(0,0,0,.8);padding:12px 14px;font:400 .875rem/1.35 Georgia,"Times New Roman",serif;color:#ece6da;text-align:left}
+.gp-title{color:#ffd100;font-size:1rem;margin-bottom:6px}
+.gp-row{display:flex;justify-content:space-between;gap:10px;color:#dcd5c8;white-space:nowrap}
+.gp-row::before{content:"•";color:#ffd100;margin-right:6px}
+.gp-row span:first-child{flex:1}
+.gp-says{margin-top:10px;padding-top:9px;border-top:1px solid #4a3b22;color:#fff}
+.gp-says b{display:block;color:#ffd100;font-weight:400;margin-bottom:2px}
+.map{position:relative;width:100%;max-width:260px}
+.map svg{width:100%;height:auto;border-radius:8px;box-shadow:0 16px 30px -12px rgba(0,0,0,.8)}
+.real-bar{display:block;width:100%;max-width:260px;margin:-18px auto 0;position:relative;filter:drop-shadow(0 12px 18px rgba(0,0,0,.7))}
+.real-bar img{width:100%;aspect-ratio:544/88;border-radius:4px}
+.tip{width:100%;max-width:252px;border-radius:6px;padding:12px 14px;background:linear-gradient(180deg,#0d1a2e,#091322);box-shadow:0 0 0 1px #8c93a3,0 0 0 2px #1a1f2a,0 16px 30px -12px rgba(0,0,0,.8);font:400 .9375rem/1.4 Georgia,serif;color:#fff;text-align:left}
+.tip .t-name{color:#5fe07b;font-size:1.0625rem}
+.tip .t-dim{color:#fff}
+.tip .t-split{display:flex;justify-content:space-between}
+.tip .t-bones{color:#5fe07b;margin-top:8px}
+.company{display:grid;justify-items:center;gap:6px}
+.company svg{width:118px;height:118px}
+.card .bubble{position:relative;max-width:230px;padding:12px 16px;border-radius:16px;background:var(--parch-1);color:var(--ink);font:700 1.0625rem/1.35 var(--f-body);text-align:center;box-shadow:0 12px 24px -10px rgba(0,0,0,.7)}
+.card .bubble::after{content:"";position:absolute;left:50%;bottom:-9px;width:18px;height:18px;margin-left:-9px;background:inherit;transform:rotate(45deg);border-radius:0 0 4px 0}
+.card .bubble cite{display:block;margin-top:4px;font:400 .8125rem/1.3 var(--f-body);font-style:normal;color:var(--ink-2)}
+
+/* Parchment band (setup) */
+.parch{z-index:1;color:var(--ink);background:var(--noise),radial-gradient(120% 80% at 50% 0%,var(--parch-1),var(--parch-2) 55%,var(--parch-3));--focus:#8e2317}
+.parch::before,.parch::after{content:"";position:absolute;left:0;right:0;height:28px;pointer-events:none;-webkit-mask-size:100% 100%;mask-size:100% 100%}
+.parch::before{top:-27px;background:var(--parch-1);-webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 28' preserveAspectRatio='none'%3E%3Cpath d='M0 28V16C60 12 96 20 150 17S246 9 318 13S420 21 486 16S600 8 672 12S780 20 846 15S966 7 1032 12S1146 21 1212 16S1332 9 1440 14V28Z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 28' preserveAspectRatio='none'%3E%3Cpath d='M0 28V16C60 12 96 20 150 17S246 9 318 13S420 21 486 16S600 8 672 12S780 20 846 15S966 7 1032 12S1146 21 1212 16S1332 9 1440 14V28Z'/%3E%3C/svg%3E")}
+.parch::after{bottom:-27px;background:var(--parch-3);-webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 28' preserveAspectRatio='none'%3E%3Cpath d='M0 0V12C72 17 120 9 192 13S312 21 378 16S492 7 564 11S684 20 756 15S870 8 942 12S1062 20 1128 16S1254 7 1320 11S1404 15 1440 13V0Z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 28' preserveAspectRatio='none'%3E%3Cpath d='M0 0V12C72 17 120 9 192 13S312 21 378 16S492 7 564 11S684 20 756 15S870 8 942 12S1062 20 1128 16S1254 7 1320 11S1404 15 1440 13V0Z'/%3E%3C/svg%3E")}
+.parch .section-head h2{color:var(--ink)}
+.parch .section-head .lead{color:var(--ink-2)}
+.parch .eyebrow{color:var(--ink-gold)}
+.parch a{color:var(--seal)}
+.steps{list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(20px,3vw,40px);counter-reset:step}
+.step{display:grid;grid-template-rows:auto auto 1fr;gap:16px}
+.step-art{position:relative;min-height:clamp(240px,21vw,300px);padding:24px 0;border-radius:var(--r-2);background:#1a1512;box-shadow:0 0 0 1px rgba(80,55,25,.5),0 24px 40px -22px rgba(60,35,10,.8);overflow:hidden;display:grid;place-items:center;align-content:center;gap:16px}
+@media (min-width:821px){.steps{grid-template-rows:auto auto 1fr}.step{grid-row:span 3;grid-template-rows:subgrid;row-gap:16px}}
+.step-head{display:flex;align-items:center;gap:14px}
+.seal{flex:none;display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:radial-gradient(circle at 34% 30%,#c0392b,#8e2317 58%,#5e140b);color:#fbe7c2;font:700 1.375rem/1 var(--f-rune);box-shadow:0 0 0 3px rgba(142,35,23,.25),0 6px 12px -4px rgba(60,10,5,.6);text-shadow:0 1px 0 rgba(0,0,0,.35)}
+.step h3{font-size:clamp(1.5rem,1.3rem + .8vw,1.875rem);color:var(--ink)}
+.step-text{color:var(--ink-2);font-size:1.125rem}
+.step code,.faq code,.note code{font:600 .95em/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:rgba(0,0,0,.07);padding:.1em .35em;border-radius:5px}
+/* Step 1 art: the installer */
+.inst{width:78%;display:grid;gap:14px;justify-items:center}
+.dmg{width:88%}
+.appwin-bar span{flex:1;text-align:center;margin-right:40px;font-size:.8125rem;color:#a8a49b}
+.dmg-in{display:flex;align-items:center;justify-content:space-around;gap:6px;padding:22px 12px 26px}
+.dmg-item{display:grid;justify-items:center;gap:8px}
+.dmg-item p{font-size:.8125rem;color:#ecebe7}
+.dmg .inst-icon{width:72px;height:72px;border-radius:18px}
+.dmg .inst-icon svg{width:52px;height:52px}
+.dmg-folder svg{width:76px;height:auto;filter:drop-shadow(0 8px 14px rgba(0,0,0,.6))}
+.dmg-arrow{width:52px;height:auto;flex:none}
+@media (min-width:821px) and (max-width:959px){.dmg{width:94%}.dmg-in{gap:4px;padding:18px 8px 22px}.dmg .inst-icon{width:58px;height:58px;border-radius:15px}.dmg .inst-icon svg{width:42px;height:42px}.dmg-arrow{width:34px}.dmg-folder svg{width:60px}.appwin-bar span{margin-right:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}}
+.dmg-win{white-space:nowrap;padding:5px 12px;border-radius:99px;font:700 .8125rem/1.2 var(--f-body);color:#f3ecdf;background:rgba(255,255,255,.08);box-shadow:0 0 0 1px rgba(255,255,255,.12) inset}
+.inst-icon{width:88px;height:88px;border-radius:22px;background:#23212a;display:grid;place-items:center;box-shadow:0 10px 24px -8px rgba(0,0,0,.8),0 0 0 1px rgba(255,255,255,.06) inset}
+.inst-icon svg{width:62px;height:62px}
+.inst-name{font:700 1.0625rem/1.2 var(--f-body);color:#f3ecdf}
+.inst-bar{width:100%;height:8px;border-radius:99px;background:#2d2822;overflow:hidden}
+.inst-bar i{display:block;height:100%;width:100%;border-radius:inherit;background:linear-gradient(90deg,#c98a2b,#ffdb82)}
+.inst-os{display:flex;gap:8px}
+.inst-os span{padding:5px 12px;border-radius:99px;font:700 .875rem/1.2 var(--f-body);color:#f3ecdf;background:rgba(255,255,255,.07);box-shadow:0 0 0 1px rgba(255,255,255,.1) inset}
+/* Step 2 art: the app's key screen, in its own style */
+.appwin{width:86%;border-radius:12px;background:#211f26;box-shadow:0 0 0 1px #3a3642,0 20px 40px -14px rgba(0,0,0,.85);font:400 .9375rem/1.35 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:#ecebe7;overflow:hidden;text-align:left}
+.appwin-bar{display:flex;gap:6px;padding:10px 12px;background:#1b1a20;border-bottom:1px solid #322f38}
+.appwin-bar i{width:10px;height:10px;border-radius:50%;background:#48444f}
+.appwin-in{padding:14px 16px 16px;display:grid;gap:10px}
+.appwin h4{font:600 1.0625rem/1.2 system-ui,-apple-system,"Segoe UI",sans-serif}
+.appwin label{font-size:.8125rem;color:#a8a49b}
+.appwin .field{padding:9px 11px;border-radius:8px;background:#16151a;box-shadow:0 0 0 1px #76717f inset;font:500 .875rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;color:#ecebe7;letter-spacing:.02em;direction:rtl;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.appwin .row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.appwin .appbtn{padding:8px 14px;border-radius:8px;background:#e3a458;color:#1c1407;font-weight:600;font-size:.875rem}
+.appwin .ok{color:#74cf97;font-size:.875rem;font-weight:600}
+/* Step 3 art: Bones's window in game, answering hi (the addon's look, larger type) */
+.gw{width:86%;border-radius:6px;background:#15120e;box-shadow:0 0 0 2px #7d5f2e,0 0 0 3px #2a2116,0 20px 34px -14px rgba(0,0,0,.85);font:400 .875rem/1.35 Georgia,"Times New Roman",serif;color:#ece6da;text-align:left;overflow:hidden}
+.gw-title{display:flex;align-items:center;justify-content:center;gap:8px;padding:6px 10px;background:#2b2217;border-bottom:1px solid #6b5228;color:#ffd100;font-size:1rem}
+.gw-title svg{width:24px;height:24px}
+.gw-msg{margin:8px 10px 0;padding:6px 10px;border-left:3px solid #e0b300;background:#1d1a12;color:#fff}
+.gw-msg b{display:block;font-weight:400;color:#ffd100;font-size:.8125rem}
+.gw-you{border-left-color:#5aa6e0;background:#15171c}
+.gw-you b{color:#7cc0ff}
+.gw-input{margin:10px;padding:7px 10px;border:1px solid #3f3020;background:#0b0a08;color:#8d877c;font-size:.8125rem}
+.setup-note{margin-top:clamp(28px,4vw,44px);text-align:center;color:var(--ink-2);font-size:1.0625rem}
+
+/* Cost */
+.plans{display:grid;grid-template-columns:1.15fr 1fr 1fr;gap:20px;align-items:stretch}
+.plan{position:relative;display:grid;gap:10px;align-content:start;padding:28px 26px;border-radius:var(--r-3);background:linear-gradient(180deg,var(--night-2),#0e1224);box-shadow:0 0 0 1px var(--line) inset,var(--shadow-1)}
+.plan-main{background:radial-gradient(120% 90% at 20% 0%,rgba(255,200,110,.12),transparent 70%),linear-gradient(180deg,#171b35,#0f1328);box-shadow:0 0 0 1px var(--line-2) inset,var(--shadow-1)}
+.plan-tag{position:absolute;top:-13px;left:24px;padding:5px 12px;border-radius:99px;background:var(--gold-3);color:#241305;font:700 .8125rem/1.2 var(--f-body)}
+.plan h3{font-size:1.625rem;color:var(--gold-1)}
+.plan-for{color:var(--text-2);font-size:1.0625rem}
+.plan-price{display:flex;align-items:baseline;flex-wrap:wrap;gap:6px;margin:6px 0 2px;color:var(--text-2);font-size:1.0625rem}
+.plan-price b{font:800 clamp(2rem,1.6rem + 1.4vw,2.625rem)/1 var(--f-display);color:var(--text);font-variant-numeric:lining-nums}
+.plan-note{color:var(--text-3);font-size:1rem}
+.spend{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:clamp(20px,4vw,48px);align-items:center;margin-top:clamp(28px,4vw,44px);padding:clamp(20px,3vw,32px);border-radius:var(--r-3);background:rgba(255,255,255,.025);box-shadow:0 0 0 1px var(--line) inset}
+.purse{display:flex;align-items:center;justify-content:center;gap:12px}
+.purse svg{width:clamp(64px,20vw,104px);height:auto;flex:none;filter:drop-shadow(0 12px 16px rgba(0,0,0,.6))}
+.coin{display:grid;justify-items:center;gap:2px;width:clamp(124px,38vw,170px);height:auto;aspect-ratio:1;flex:none;align-content:center;border-radius:50%;background:radial-gradient(circle at 34% 28%,#fff3c8,#f2c35b 48%,#b77d22 100%);color:#2a1705;box-shadow:0 0 0 5px #6e440c inset,0 0 0 8px #ffdb82 inset,0 18px 30px -12px rgba(0,0,0,.8)}
+.coin b{font:800 clamp(1.75rem,1.2rem + 2vw,2.5rem)/1 var(--f-display);font-variant-numeric:lining-nums}
+.spend .coin{color:#2a1705}
+.coin span{font:700 .875rem/1.2 var(--f-body)}
+.spend h3{font-size:1.5rem;color:var(--gold-1);margin-bottom:8px}
+.spend p{color:var(--text-2);font-size:1.0625rem}
+.spend p+p{margin-top:10px}
+.fine{margin-top:22px;text-align:center;color:var(--text-3);font-size:1rem}
+
+/* Privacy */
+.privacy{background:radial-gradient(900px 460px at 50% 340px,rgba(98,86,190,.14),transparent 70%),var(--night-1)}
+.facts{list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.fact{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto 1fr;gap:6px 16px;align-items:start;padding:24px;border-radius:var(--r-2);background:rgba(255,255,255,.028);box-shadow:0 0 0 1px var(--line) inset}
+.fact svg{grid-row:span 2;width:40px;height:40px;padding:8px;border-radius:12px;background:rgba(242,181,68,.1);color:var(--gold-2);box-shadow:0 0 0 1px var(--line) inset}
+.fact h3{font:700 1.1875rem/1.3 var(--f-body);color:var(--text);letter-spacing:0}
+.fact p a{display:inline-block;padding-block:12px;margin-block:-12px}
+.fact p{color:var(--text-2);font-size:1.0625rem}
+.fact code{font:600 .92em/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--gold-1);background:rgba(255,255,255,.07);padding:.15em .4em;border-radius:5px}
+.names{margin-top:24px;text-align:center;color:var(--text-2);font-size:1.0625rem}
+
+/* Download */
+.download{background:radial-gradient(900px 520px at 50% 22%,rgba(255,168,84,.12),transparent 65%),var(--night-1)}
+.needs{list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:28px}
+.needs li{display:flex;gap:14px;align-items:flex-start;padding:18px 20px;border-radius:var(--r-2);background:rgba(255,255,255,.028);box-shadow:0 0 0 1px var(--line) inset}
+.needs svg{width:28px;height:28px;flex:none;color:var(--gold-2);margin-top:2px}
+.needs b{display:block;font-weight:700;color:var(--text)}
+.needs span{color:var(--text-2);font-size:1.0625rem}
+.release-line{text-align:center;color:var(--text-3);font-size:1rem;margin-bottom:22px}
+[data-mac="soon"][data-win="soon"] .release-notes{display:none}
+.os-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.os-card{display:grid;gap:14px;align-content:start;padding:28px;border-radius:var(--r-3);background:linear-gradient(180deg,var(--night-2),#0e1224);box-shadow:0 0 0 1px var(--line) inset,var(--shadow-1)}
+[data-os="mac"] .os-mac,[data-os="win"] .os-win{box-shadow:0 0 0 1px var(--line-2) inset,var(--shadow-1)}
+[data-os="win"] .os-win{order:-1}
+.os-card h3{font-size:1.75rem;color:var(--gold-1)}
+.os-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.os-head .yours{display:none;font:700 .8125rem/1 var(--f-body);color:#241305;background:var(--gold-3);padding:5px 10px;border-radius:99px}
+[data-os="mac"] .os-mac .yours,[data-os="win"] .os-win .yours{display:inline-block}
+.os-req{color:var(--text-2);font-size:1.0625rem}
+.os-card .dl-card,.os-card .soon-card{display:none}
+[data-mac="ready"] .os-mac .dl-card,[data-win="ready"] .os-win .dl-card{display:flex}
+[data-mac="soon"] .os-mac .soon-card,[data-win="soon"] .os-win .soon-card{display:block}
+.dl-card{flex-wrap:wrap;align-items:center;gap:12px 16px}
+.dl-card .size{color:var(--text-3);font-size:1rem}
+.soon-card{padding:12px 16px;border-radius:12px;background:rgba(255,255,255,.04);color:var(--text-2);font-size:1.0625rem}
+.soon-card b{display:block;color:var(--gold-2)}
+.next-title{font:700 .8125rem/1.3 var(--f-rune);letter-spacing:.14em;text-transform:uppercase;color:var(--gold-3);margin-top:6px}
+.next{list-style:none;counter-reset:n;display:grid;gap:10px}
+.next li{counter-increment:n;display:grid;grid-template-columns:30px 1fr;gap:10px;color:var(--text-2);font-size:1.0625rem}
+.next li::before{content:counter(n);display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:rgba(242,181,68,.12);color:var(--gold-2);font:700 .9375rem/1 var(--f-body);box-shadow:0 0 0 1px var(--line) inset;margin-top:1px}
+.next b{color:var(--text)}
+.verify{margin-top:24px;text-align:center;color:var(--text-3);font-size:1rem}
+[data-mac="soon"][data-win="soon"] .verify,[data-mac="soon"][data-win="soon"] .sums-link{display:none}
+.unofficial{margin-top:10px;text-align:center;color:var(--text-3);font-size:1rem}
+.send{margin:0 auto 36px;max-width:640px;display:none}
+[data-device="mobile"] .send{display:block}
+[data-pick="none"] .send{display:none!important}
+[data-device="mobile"] .os-card .dl-card{display:none!important}
+@media (hover:none) and (pointer:coarse){html:not([data-device="desktop"]) .send{display:block}html:not([data-device="desktop"]) .os-card .dl-card{display:none!important}}
+
+/* FAQ */
+.faq-list{max-width:820px;margin-inline:auto;display:grid;gap:12px}
+.faq details{border-radius:var(--r-2);background:rgba(255,255,255,.028);box-shadow:0 0 0 1px var(--line) inset}
+.faq details[open]{background:rgba(255,255,255,.045);box-shadow:0 0 0 1px var(--line-2) inset}
+.faq summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:64px;padding:16px 22px;font:700 1.1875rem/1.35 var(--f-body);color:var(--text);border-radius:inherit}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"";flex:none;width:12px;height:12px;border-right:2px solid var(--gold-2);border-bottom:2px solid var(--gold-2);transform:rotate(45deg) translate(-3px,-3px);transition:transform .2s ease}
+.faq details[open] summary::after{transform:rotate(225deg) translate(-3px,-3px)}
+.faq summary:hover{color:var(--gold-1)}
+.faq .answer{padding:0 22px 20px;color:var(--text-2);font-size:1.0625rem;display:grid;gap:10px;max-width:44em}
+.faq code{color:var(--gold-1);background:rgba(255,255,255,.07)}
+.faq.parch details{background:rgba(255,251,240,.5);box-shadow:0 0 0 1px rgba(122,79,14,.26) inset}
+.faq.parch details[open]{background:rgba(255,251,240,.78);box-shadow:0 0 0 1px rgba(122,79,14,.44) inset}
+.faq.parch summary{color:var(--ink)}
+.faq.parch summary:hover{color:var(--seal)}
+.faq.parch summary::after{border-color:var(--ink-gold)}
+.faq.parch .answer{color:var(--ink-2)}
+.faq.parch code{color:var(--ink);background:rgba(92,70,49,.1)}
+
+/* Closing */
+.closing{padding-top:clamp(40px,6vw,72px);text-align:center;background:radial-gradient(700px 380px at 50% 100%,rgba(255,168,84,.18),transparent 70%),var(--night-1)}
+.closing-in{display:grid;justify-items:center;gap:20px}
+.closing svg.big{width:150px;height:150px;filter:drop-shadow(0 20px 30px rgba(0,0,0,.6))}
+.closing h2{font-size:clamp(2.25rem,1.6rem + 2.6vw,3.5rem);color:var(--gold-1)}
+.closing .quote{font:700 1.25rem/1.4 var(--f-body);color:var(--text-2)}
+.closing .quote cite{display:block;font-style:normal;font-weight:400;font-size:1rem;color:var(--text-3);margin-top:4px}
+.closing .get{justify-items:center}
+[data-mac="soon"][data-win="soon"] .release-line,[data-mac="soon"][data-win="soon"] .soon-card{display:none}
+.sums-plain{display:none}
+[data-mac="soon"][data-win="soon"] .sums-inline{display:none}
+[data-mac="soon"][data-win="soon"] .sums-plain{display:inline}
+#download .dl-soon{margin:0 auto 32px;justify-items:center;text-align:center}
+#download .dl-soon .btns{justify-content:center}
+.closing .get-mobile,.closing .get-soon{justify-items:center;text-align:center;margin-inline:auto}
+.closing .get-mobile .btns,.closing .get-soon .btns{justify-content:center}
+.closing .get-other,.closing .cost-line{text-align:center}
+
+/* Footer */
+.foot{background:var(--night-0);border-top:1px solid rgba(242,181,68,.12);padding-block:48px 56px;color:var(--text-3);font-size:1rem}
+.foot-in{display:grid;gap:22px}
+.foot-top{display:flex;flex-wrap:wrap;align-items:center;gap:16px 28px;justify-content:space-between}
+.foot .brand{margin-right:0}
+.foot .notaff{color:var(--text);font-weight:700;font-size:1.0625rem}
+.foot ul{list-style:none;display:flex;flex-wrap:wrap;gap:4px 8px}
+.foot ul a{display:inline-flex;align-items:center;min-height:44px;padding:0 8px;color:var(--text-2)}
+.foot ul a:hover{color:var(--gold-1)}
+.foot .legal{max-width:64em;font-size:.9375rem;line-height:1.55}
+
+/* Layout: tablet and phone */
+@media (max-width:1100px){
+  .cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .nav{display:none}
+}
+@media (max-width:980px){
+  .hero-grid{grid-template-columns:1fr}
+  .hero-copy{max-width:640px}
+  .stage{max-width:760px;width:100%;justify-self:center}
+  .plans{grid-template-columns:1fr;max-width:620px;margin-inline:auto}
+  .facts{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .needs{grid-template-columns:1fr}
+  .spend{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:820px){
+  .steps{grid-template-columns:1fr;max-width:520px;margin-inline:auto;gap:56px}
+  .step-head{order:1}.step-text{order:2}.step-art{order:3}
+  .os-cards{grid-template-columns:1fr}
+}
+@media (max-width:719px){
+  body{font-size:1.125rem}
+  .top-in{min-height:64px}
+  .brand svg{width:40px;height:40px}
+  .brand-name{font-size:1.0625rem}
+  .hero-copy{display:contents}
+  .hero-grid{gap:22px;justify-items:start}
+  .hero .eyebrow{order:1}.hero h1{order:2}.hero .lead{order:3}.stage{order:4}.hero .get{order:5}.hero .trust{order:6}
+  .stage{aspect-ratio:10/13.6;margin-block:4px}
+  .stage-window{left:5%;top:3%;bottom:auto;width:90%}
+  .stage-window img{aspect-ratio:764/1088}
+  .stage-hud,.cap-hud{display:none}
+  .stage-bones{right:-2%;bottom:-5%;width:22%}
+  .cards{grid-template-columns:1fr;max-width:460px;margin-inline:auto}
+  .facts{grid-template-columns:1fr}
+  .btn-dl{width:100%}
+  .get .dl{width:100%}
+}
+@media (max-width:380px){
+  .brand-name{font-size:.9375rem;letter-spacing:.03em}
+  .btn-small{padding:8px 12px}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+@media (forced-colors:active){
+  .btn{border:2px solid ButtonText}
+}
+</style>
+<script src="assets/app.js" defer></script>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="g-bone" x1="0" y1="30" x2="0" y2="160" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#fdf6e6"/><stop offset="1" stop-color="#e2cfa8"/></linearGradient>
+    <radialGradient id="g-eye"><stop offset="0" stop-color="#fff7cf"/><stop offset=".35" stop-color="#ffd24d"/><stop offset=".7" stop-color="#ff9a1a" stop-opacity=".5"/><stop offset="1" stop-color="#ff9a1a" stop-opacity="0"/></radialGradient>
+    <g id="p-bone"><rect x="28" y="111" width="144" height="18" rx="9"/><circle cx="28" cy="111" r="12"/><circle cx="28" cy="129" r="12"/><circle cx="172" cy="111" r="12"/><circle cx="172" cy="129" r="12"/></g>
+    <g id="p-head"><circle cx="100" cy="84" r="56"/><rect x="71" y="108" width="58" height="44" rx="14"/></g>
+    <g id="p-skull">
+      <g stroke="#1d150f" stroke-width="12" stroke-linejoin="round" fill="#1d150f"><use href="#p-bone" transform="rotate(34 100 120)"/><use href="#p-bone" transform="rotate(-34 100 120)"/></g>
+      <g fill="url(#g-bone)"><use href="#p-bone" transform="rotate(34 100 120)"/><use href="#p-bone" transform="rotate(-34 100 120)"/></g>
+      <g transform="rotate(-6 100 96)">
+        <use href="#p-head" stroke="#1d150f" stroke-width="12" stroke-linejoin="round" fill="#1d150f"/>
+        <use href="#p-head" fill="url(#g-bone)"/>
+        <path d="M60 64a46 46 0 0 1 40-28" fill="none" stroke="#fffdf7" stroke-width="7" stroke-linecap="round"/>
+        <path d="M96 112q4-9 8 0q0 6-4 6t-4-6z" fill="#1d150f"/>
+        <path d="M89 134v14M100 134v15M111 134v14" stroke="#1d150f" stroke-width="5" stroke-linecap="round"/>
+      </g>
+    </g>
+  </defs>
+  <symbol id="bones" viewBox="0 0 200 200">
+    <use href="#p-skull"/>
+    <g transform="rotate(-6 100 96)">
+      <circle cx="79" cy="90" r="17" fill="#1d150f"/><circle cx="121" cy="90" r="17" fill="#1d150f"/>
+      <g class="eye"><circle cx="80" cy="91" r="13" fill="url(#g-eye)"/><circle cx="122" cy="91" r="13" fill="url(#g-eye)"/></g>
+      <circle cx="80" cy="91" r="4.5" fill="#fffbe6"/><circle cx="122" cy="91" r="4.5" fill="#fffbe6"/>
+    </g>
+  </symbol>
+  <symbol id="bones-happy" viewBox="0 0 200 200">
+    <use href="#p-skull"/>
+    <g transform="rotate(-6 100 96)">
+      <circle cx="79" cy="90" r="17" fill="#1d150f"/><circle cx="121" cy="90" r="17" fill="#1d150f"/>
+      <path d="M69 95q10-14 20 0M111 95q10-14 20 0" fill="none" stroke="#ffd24d" stroke-width="5" stroke-linecap="round"/>
+    </g>
+  </symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.2 4.2L19 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3.5v11m0 0l-4.5-4.5M12 14.5l4.5-4.5M4.5 16.5v2.2c0 .9.7 1.6 1.6 1.6h11.8c.9 0 1.6-.7 1.6-1.6v-2.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 7l8 6 8-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1.2 1.2M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1.2-1.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 15V4m0 0L8 8m4-4l4 4M6 11H5.5A1.5 1.5 0 0 0 4 12.5v6A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5v-6A1.5 1.5 0 0 0 18.5 11H18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-user-off" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5 20c.8-3.6 3.6-5.6 7-5.6s6.2 2 7 5.6M4 4l16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M11 12l8.5-8.5M16 7l2.5 2.5M14 9l2 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M3 12s3.3-6 9-6c1.6 0 3 .5 4.2 1.2M21 12s-3.3 6-9 6c-1.6 0-3-.5-4.2-1.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M9.9 14.1a3 3 0 0 1 4.2-4.2M4 20L20 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-hand" viewBox="0 0 24 24"><path d="M8 12V5.5a1.5 1.5 0 0 1 3 0V11m0-6.5a1.5 1.5 0 0 1 3 0V11m0-5a1.5 1.5 0 0 1 3 0v7c0 4-2.4 7-6 7-2.6 0-4.1-1.3-5.4-3.4L3.8 13a1.5 1.5 0 0 1 2.5-1.6L8 13.5" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 21L21 3" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6.5h11M9 12h11M9 17.5h11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="4.8" cy="6.5" r="1.4" fill="currentColor"/><circle cx="4.8" cy="12" r="1.4" fill="currentColor"/><circle cx="4.8" cy="17.5" r="1.4" fill="currentColor"/></symbol>
+  <symbol id="i-screen" viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="12.5" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9 20.5h6M12 17v3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="5.5" y="7" width="4" height="2.4" rx=".6" fill="currentColor"/></symbol>
+  <symbol id="i-game" viewBox="0 0 24 24"><path d="M12 2.8l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16l-5.2 2.8 1-5.8-4.2-4.1 5.8-.8z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></symbol>
+  <symbol id="i-computer" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="10.5" rx="1.8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M2.5 19h19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.6 2.6M15.4 15.4L18 18M6 18l2.6-2.6M15.4 8.6L18 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="2.2" fill="currentColor"/></symbol>
+  <symbol id="rune" viewBox="0 0 40 40"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 4l14 16-14 16L6 20z"/><path d="M20 11v18M14 17l6 6 6-6"/></g></symbol>
+</svg>
+
+<a class="skip" href="#main">Skip to content</a>
+<p id="status" class="sr-only" role="status" aria-live="polite"></p>
+
+<header class="top">
+  <div class="wrap top-in">
+    <a class="brand" href="#main"><svg aria-hidden="true"><use href="#bones"/></svg><span class="brand-name">Bones Companion</span></a>
+    <nav class="nav" aria-label="Main">
+      <ul>
+        <li><a href="#what">What it does</a></li>
+        <li><a href="#setup">Setup</a></li>
+        <li><a href="#cost">Cost</a></li>
+        <li><a href="#privacy">Privacy</a></li>
+        <li><a href="#faq">Questions</a></li>
+      </ul>
+    </nav>
+    <a class="btn btn-gold btn-small" href="#download">Download</a>
+  </div>
+</header>
+
+<main id="main" tabindex="-1">
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow">For World of Warcraft<span class="reg">®</span>: Forever</p>
+        <h1 id="hero-title">Never quest alone</h1>
+        <p class="lead">Bones is an AI companion that lives in your game. Ask what to do next, where to go or which ring is better, and Bones answers right there, with a route on your map when it helps.</p>
+        <div class="get">
+          <div class="dl-row">
+            <a class="btn btn-gold btn-dl dl dl-mac" data-href="mac" href="https://github.com/tommygeoco/bones-companion-releases/releases/latest"><svg aria-hidden="true"><use href="#i-download"/></svg><span class="btn-label">Download for macOS</span><span class="btn-meta" data-text="mac-meta">Free · macOS 14 or later</span></a>
+            <a class="btn btn-gold btn-dl dl dl-win" data-href="win" href="https://github.com/tommygeoco/bones-companion-releases/releases/latest"><svg aria-hidden="true"><use href="#i-download"/></svg><span class="btn-label">Download for Windows</span><span class="btn-meta" data-text="win-meta">Free · Windows 10 or 11</span></a>
+          </div>
+          <p class="get-other"><span class="other-win"><a data-href="win" href="https://github.com/tommygeoco/bones-companion-releases/releases/latest">Download for Windows</a> · </span><span class="other-mac"><a data-href="mac" href="https://github.com/tommygeoco/bones-companion-releases/releases/latest">Download for macOS</a> · </span><span class="other-win-soon">Windows version coming soon · </span><span class="other-mac-soon">macOS version coming soon · </span><span class="more"><a href="#download">All downloads</a></span></p>
+          <p class="linux-note get-other">Bones Companion runs on macOS and Windows.</p>
+          <div class="get-soon">
+            <p class="soon-title">Coming soon</p>
+            <p><span class="soon-all">Bones Companion is almost ready for macOS and Windows.</span><span class="soon-win">Bones Companion for Windows is almost ready.</span><span class="soon-mac">Bones Companion for macOS is almost ready.</span> There’s no mailing list. GitHub can email you when it’s out.</p>
+            <p class="soon-other"><span class="soon-win">On a Mac? <a data-href="mac" href="https://github.com/tommygeoco/bones-companion-releases/releases/latest">Download for macOS</a></span><span class="soon-mac">On a PC? <a data-href="win" href="https://github.com/tommygeoco/bones-companion-releases/releases/latest">Download for Windows</a></span></p>
+            <div class="btns"><a class="btn btn-gold" href="https://github.com/tommygeoco/bones-companion-releases">Watch for it on GitHub</a><a class="btn btn-ghost" href="mailto:?subject=Bones%20Companion%2C%20coming%20soon&amp;body=Bones%20Companion%20is%20almost%20ready.%20Check%20back%20here%3A%20https%3A%2F%2Ftommygeoco.github.io%2Fbones-companion-releases%2F"><svg aria-hidden="true"><use href="#i-mail"/></svg>Email yourself the link</a></div>
+            <p class="soon-help">Watching needs a free GitHub account: click Watch, then Custom, pick Releases and click Apply.</p>
+          </div>
+          <div class="get-mobile">
+            <p class="mobile-title">Bones Companion runs on a Mac or PC</p>
+            <p>Send yourself the link and pick it up at your computer.</p>
+            <div class="btns">
+              <a class="btn btn-gold" href="mailto:?subject=Bones%20Companion%2C%20to%20download%20on%20your%20Mac%20or%20PC&amp;body=Open%20this%20on%20your%20Mac%20or%20PC%20to%20download%20Bones%20Companion%3A%20https%3A%2F%2Ftommygeoco.github.io%2Fbones-companion-releases%2F"><svg aria-hidden="true"><use href="#i-mail"/></svg>Email yourself the link</a>
+              <button class="btn btn-ghost" type="button" data-copy hidden><svg aria-hidden="true"><use href="#i-link"/></svg><span>Copy link</span></button>
+              <button class="btn btn-ghost" type="button" data-share hidden><svg aria-hidden="true"><use href="#i-share"/></svg>Share</button>
+            </div>
+          </div>
+          <p class="mobile-links"><span class="mob-both">On your computer already? Download for <a data-href="mac" href="https://github.com/tommygeoco/bones-companion-releases/releases/latest">macOS</a> or <a data-href="win" href="https://github.com/tommygeoco/bones-companion-releases/releases/latest">Windows</a>.</span><span class="mob-mac">On your computer already? <a data-href="mac" href="https://github.com/tommygeoco/bones-companion-releases/releases/latest">Download for macOS</a>. The Windows version is almost ready.</span><span class="mob-win">On your computer already? <a data-href="win" href="https://github.com/tommygeoco/bones-companion-releases/releases/latest">Download for Windows</a>. The macOS version is almost ready.</span></p>
+          <p class="cost-line">The app is free. On a typical model, your AI costs <strong data-cost="day">about $0.17–0.37 a day</strong>, or you can <a href="#cost">try Bones free</a>.</p>
+        </div>
+        <ul class="trust" aria-label="Our promises">
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg>No Bones Companion account</li>
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg>Your key stays on your computer</li>
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg>No tracking</li>
+        </ul>
+      </div>
+
+      <figure class="stage" aria-labelledby="stage-cap">
+        <div class="stage-frame">
+          <svg class="stage-scene" viewBox="0 0 1200 750" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+            <defs>
+              <linearGradient id="s-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#232d57"/><stop offset=".36" stop-color="#6f5485"/><stop offset=".6" stop-color="#e2956a"/><stop offset=".78" stop-color="#ffcd86"/><stop offset="1" stop-color="#ffe4aa"/></linearGradient>
+              <radialGradient id="s-sun" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(880 430) scale(340)"><stop offset="0" stop-color="#fff6d6"/><stop offset=".12" stop-color="#ffe7a3"/><stop offset=".32" stop-color="#ffc977" stop-opacity=".5"/><stop offset="1" stop-color="#ffb35c" stop-opacity="0"/></radialGradient>
+              <linearGradient id="s-far" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b87a8c"/><stop offset="1" stop-color="#d99a86"/></linearGradient>
+              <linearGradient id="s-mid" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c98146"/><stop offset="1" stop-color="#a45f33"/></linearGradient>
+              <linearGradient id="s-near" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7a4a2a"/><stop offset="1" stop-color="#3f2617"/></linearGradient>
+              <linearGradient id="s-front" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a2c1a"/><stop offset="1" stop-color="#23150d"/></linearGradient>
+              <radialGradient id="s-wp"><stop offset="0" stop-color="#fff3c4"/><stop offset=".45" stop-color="#ffd35a"/><stop offset="1" stop-color="#ffb02e" stop-opacity="0"/></radialGradient>
+              <g id="s-tree"><path d="M-3 0C-2-30-4-52-10-70M3 0C2-30 5-50 14-66" stroke="#2b1b10" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M-62-70C-50-92-18-98 6-94C30-100 58-92 66-74C40-64-34-60-62-70Z" fill="#2b1b10"/></g>
+            </defs>
+            <rect width="1200" height="750" fill="url(#s-sky)"/>
+            <circle cx="880" cy="430" r="340" fill="url(#s-sun)"/>
+            <circle cx="880" cy="430" r="44" fill="#fff4d2"/>
+            <path d="M190 120a34 34 0 1 0 30 50a28 28 0 1 1-30-50z" fill="#fff3d4" opacity=".85"/>
+            <g fill="#fff">
+              <circle class="tw" cx="90" cy="60" r="1.6"/><circle class="tw" cx="300" cy="96" r="1.2"/><circle class="tw" cx="380" cy="40" r="1.8"/><circle class="tw" cx="470" cy="120" r="1.1"/>
+              <circle class="tw" cx="560" cy="30" r="1.4"/><circle class="tw" cx="640" cy="90" r="1.1"/><circle class="tw" cx="1010" cy="70" r="1.5"/><circle class="tw" cx="1120" cy="140" r="1.2"/>
+              <circle class="tw" cx="930" cy="36" r="1.1"/><circle class="tw" cx="760" cy="56" r="1.3"/><circle class="tw" cx="40" cy="190" r="1.1"/><circle class="tw" cx="1160" cy="40" r="1.4"/>
+            </g>
+            <path d="M0 420L60 420L72 392L170 388L182 420L330 424L346 380L420 376L436 426L640 430L1200 432V520H0Z" fill="url(#s-far)" opacity=".9"/>
+            <path d="M1010 432L1024 396L1110 392L1126 434Z" fill="#c98f86" opacity=".8"/>
+            <path d="M0 470C160 450 300 462 470 474C640 486 760 452 930 456C1060 459 1140 470 1200 466V750H0Z" fill="url(#s-mid)"/>
+            <path d="M0 540C200 510 360 530 540 548C720 566 900 520 1200 540V750H0Z" fill="url(#s-near)"/>
+            <path d="M0 640C240 610 480 650 700 660C900 668 1060 640 1200 650V750H0Z" fill="url(#s-front)"/>
+            <g transform="translate(700 470) scale(.5)" opacity=".85"><use href="#s-tree"/></g>
+            <g transform="translate(160 520) scale(.8)"><use href="#s-tree"/></g>
+            <g transform="translate(1110 580) scale(1.05)"><use href="#s-tree"/></g>
+            <g transform="translate(470 478) scale(.42)" opacity=".8"><use href="#s-tree"/></g>
+            <g fill="#5a3421"><path d="M958 452l14-18 14 18z"/><path d="M982 452l11-14 11 14z"/></g>
+            <path class="route" d="M420 750C470 700 540 668 600 646C660 624 700 612 760 606C820 600 860 580 900 548C930 524 950 500 968 466" fill="none" stroke="#ffe08a" stroke-width="5" stroke-linecap="round" opacity=".95"/>
+            <g font-family="Georgia,serif" font-weight="700" font-size="15" text-anchor="middle">
+              <g transform="translate(520 690)"><circle r="16" fill="#3a2414" stroke="#ffd35a" stroke-width="3"/><text y="5" fill="#ffd35a">3</text></g>
+              <g transform="translate(760 606)"><circle class="pulse" r="30" fill="url(#s-wp)"/><circle r="19" fill="#ffd35a" stroke="#3a2414" stroke-width="3"/><text y="5" fill="#3a2414">4</text></g>
+              <g transform="translate(900 548)"><circle r="14" fill="#3a2414" stroke="#c9a15a" stroke-width="3" opacity=".85"/><text y="5" font-size="13" fill="#c9a15a">5</text></g>
+              <g transform="translate(968 470)"><circle r="12" fill="#3a2414" stroke="#c9a15a" stroke-width="3" opacity=".75"/><text y="4" font-size="12" fill="#c9a15a">6</text></g>
+            </g>
+          </svg>
+          <picture class="stage-window">
+            <source media="(max-width: 719px)" type="image/avif" srcset="assets/img/window-narrow-382.avif 382w, assets/img/window-narrow-764.avif 764w" sizes="84vw" width="764" height="1088">
+            <source media="(max-width: 719px)" type="image/webp" srcset="assets/img/window-narrow-382.webp 382w, assets/img/window-narrow-764.webp 764w" sizes="84vw" width="764" height="1088">
+            <source type="image/avif" srcset="assets/img/window-442.avif 442w, assets/img/window-884.avif 884w" sizes="(min-width: 1400px) 420px, (min-width: 981px) 30vw, 51vw" width="884" height="960">
+            <source type="image/webp" srcset="assets/img/window-442.webp 442w, assets/img/window-884.webp 884w" sizes="(min-width: 1400px) 420px, (min-width: 981px) 30vw, 51vw" width="884" height="960">
+            <img src="assets/img/window-884.webp" width="884" height="960" alt="" fetchpriority="high" decoding="async">
+          </picture>
+          <picture class="stage-hud">
+            <source media="(max-width: 719px)" srcset="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
+            <source type="image/avif" srcset="assets/img/hud-302.avif 302w, assets/img/hud-604.avif 604w" sizes="(min-width: 1400px) 320px, (min-width: 981px) 23vw, (min-width: 720px) 38vw, 72vw">
+            <source type="image/webp" srcset="assets/img/hud-302.webp 302w, assets/img/hud-604.webp 604w" sizes="(min-width: 1400px) 320px, (min-width: 981px) 23vw, (min-width: 720px) 38vw, 72vw">
+            <img src="assets/img/hud-604.webp" width="604" height="704" alt="" decoding="async">
+          </picture>
+        </div>
+        <div class="stage-bones" aria-hidden="true"><svg viewBox="0 0 200 200"><use href="#bones"/></svg></div>
+        <figcaption id="stage-cap" class="sr-only">Bones in the game. In the chat window, Bones says to turn in what’s done at the Crossroads and head east to Thorn Hill, then tells a hunter a ring is an upgrade. <span class="cap-hud">The Bones HUD follows a route to stop 4, Thorn Hill, 60 yards to your right, and shows the quest’s kill counts.</span></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section what" id="what" aria-labelledby="what-title">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">What it does</p>
+        <h2 id="what-title">Ask Bones, right in the game</h2>
+        <p class="lead">Bones knows your character, your quests and your gear, and answers in a chat window in WoW. No second screen, no wiki tabs.</p>
+      </div>
+      <ul class="cards" role="list">
+        <li class="card">
+          <div class="card-art" aria-hidden="true">
+            <div class="gp" data-surface="game">
+              <p class="gp-title">Disrupt the Attacks</p>
+              <p class="gp-row"><span>Razormane Water Seeker</span><span>1/8</span></p>
+              <p class="gp-row"><span>Razormane Thornweaver</span><span>1/8</span></p>
+              <p class="gp-row"><span>Razormane Hunter</span><span>1/3</span></p>
+              <p class="gp-says"><b>Bones says</b>Turn in what's done at the Crossroads, then head east to Thorn Hill.</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <h3>Knows what’s next</h3>
+            <p>Bones knows your quest log and tells you where to go and what to do when you get there.</p>
+          </div>
+        </li>
+        <li class="card">
+          <div class="card-art" aria-hidden="true">
+            <div class="map" data-surface="game">
+              <svg viewBox="0 0 260 160">
+                <rect width="260" height="160" rx="8" fill="#efdfbd"/>
+                <path d="M0 118C40 104 70 126 110 116S180 92 260 104" fill="none" stroke="#b89363" stroke-width="1.5"/>
+                <path d="M0 58C50 70 90 46 140 56S210 78 260 60" fill="none" stroke="#b89363" stroke-width="1.5"/>
+                <path d="M170 30l10-14 10 14M186 34l8-11 8 11M40 150l9-13 9 13" fill="none" stroke="#8f6c3f" stroke-width="1.6"/>
+                <g stroke-width="2.5" stroke-opacity=".75" stroke-linecap="round"><line x1="28" y1="132" x2="67" y2="110" stroke="#ff4d4d"/><line x1="67" y1="110" x2="104" y2="92" stroke="#80ffff"/><line x1="104" y1="92" x2="170" y2="70" stroke="#ff4d4d"/><line x1="170" y1="70" x2="200" y2="50" stroke="#ff4d4d"/><line x1="200" y1="50" x2="232" y2="32" stroke="#59ccff"/></g>
+                <g font-family="Georgia,serif" font-size="10" font-weight="700" text-anchor="middle" fill="#000">
+                  <g transform="translate(28 132)"><circle r="10" fill="#000" fill-opacity=".85"/><circle r="8" fill="#59ccff"/><text y="3.5">1</text></g>
+                  <g transform="translate(67 110)"><circle r="10" fill="#000" fill-opacity=".85"/><circle r="8" fill="#ff4d4d"/><text y="3.5">2</text></g>
+                  <g transform="translate(104 92)"><circle r="10" fill="#000" fill-opacity=".85"/><circle r="8" fill="#80ffff"/><text y="3.5">3</text></g>
+                  <g transform="translate(200 50)"><circle r="10" fill="#000" fill-opacity=".85"/><circle r="8" fill="#ff4d4d"/><text y="3.5">5</text></g>
+                  <g transform="translate(232 32)"><circle r="10" fill="#000" fill-opacity=".85"/><circle r="8" fill="#59ccff"/><text y="3.5">6</text></g>
+                  <g transform="translate(170 70)"><circle r="10" fill="#fff" fill-opacity=".9"/><circle r="8" fill="#ff4d4d"/><text y="3.5">4</text></g>
+                </g>
+                <text x="16" y="24" font-family="Georgia,serif" font-size="12" fill="#5c4631" font-style="italic">The Barrens</text>
+              </svg>
+              <picture class="real-bar">
+                <source type="image/avif" srcset="assets/img/route-bar-272.avif 272w, assets/img/route-bar-544.avif 544w" sizes="260px">
+                <source type="image/webp" srcset="assets/img/route-bar-272.webp 272w, assets/img/route-bar-544.webp 544w" sizes="260px">
+                <img src="assets/img/route-bar-544.webp" width="544" height="88" alt="" decoding="async">
+              </picture>
+            </div>
+          </div>
+          <div class="card-body">
+            <h3>Draws the route</h3>
+            <p>Ask for a route and it goes on your map, with an arrow and the distance to the next stop.</p>
+          </div>
+        </li>
+        <li class="card">
+          <div class="card-art" aria-hidden="true">
+            <div class="tip" data-surface="game">
+              <p class="t-name">Band of the Wanderer</p>
+              <p class="t-split"><span>Finger</span></p>
+              <p class="t-dim">+4 Agility</p>
+              <p class="t-dim">+3 Stamina</p>
+              <p class="t-bones">Bones: an upgrade for your build, +12% over Band of Ash</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <h3>Sizes up your gear</h3>
+            <p>Once Bones knows your build, the tooltip on each piece of gear says whether it’s an upgrade for you. Ask Bones about anything else in the chat window.</p>
+          </div>
+        </li>
+        <li class="card">
+          <div class="card-art" aria-hidden="true">
+            <div class="company">
+              <p class="bubble">“Level 13! The Razormane never saw it coming.”<cite>Bones, after a level-up</cite></p>
+              <svg viewBox="0 0 200 200"><use href="#bones-happy"/></svg>
+            </div>
+          </div>
+          <div class="card-body">
+            <h3>Keeps you company</h3>
+            <p>Turn on check-ins and Bones checks in after a level-up, a new zone or a finished route.</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section parch" id="setup" aria-labelledby="setup-title">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Setup</p>
+        <h2 id="setup-title">Set up in three steps</h2>
+        <p class="lead">No terminal and no files to edit. The app walks you through it.</p>
+      </div>
+      <ol class="steps">
+        <li class="step">
+          <div class="step-art" aria-hidden="true">
+            <div class="appwin dmg">
+              <div class="appwin-bar"><i></i><i></i><i></i><span>Bones Companion</span></div>
+              <div class="dmg-in">
+                <div class="dmg-item"><div class="inst-icon"><svg viewBox="0 0 200 200"><use href="#bones"/></svg></div><p>Bones Companion</p></div>
+                <svg class="dmg-arrow" viewBox="0 0 64 24"><path d="M4 12h50M44 4l10 8-10 8" fill="none" stroke="#e3a458" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 6"/></svg>
+                <div class="dmg-item"><div class="dmg-folder"><svg viewBox="0 0 88 72"><path d="M4 14a6 6 0 0 1 6-6h22l8 8h38a6 6 0 0 1 6 6v40a6 6 0 0 1-6 6H10a6 6 0 0 1-6-6z" fill="#5f8fc9"/><path d="M4 24h80v38a6 6 0 0 1-6 6H10a6 6 0 0 1-6-6z" fill="#79a9e0"/><path d="M34 54l10-22 10 22M38 46h12" fill="none" stroke="#dcecff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><p>Applications</p></div>
+              </div>
+            </div>
+            <p class="dmg-win">Windows: run the installer</p>
+          </div>
+          <div class="step-head"><span class="seal" aria-hidden="true">1</span><h3><span class="sr-only">Step 1: </span>Download</h3></div>
+          <p class="step-text">Get Bones Companion for macOS or Windows and open it.</p>
+        </li>
+        <li class="step">
+          <div class="step-art" aria-hidden="true">
+            <div class="appwin">
+              <div class="appwin-bar"><i></i><i></i><i></i></div>
+              <div class="appwin-in">
+                <h4>Connect Claude</h4>
+                <label>API key</label>
+                <p class="field"><span dir="ltr">sk-ant-api03-••••••••A1b2</span></p>
+                <div class="row"><span class="ok">✓ Your key works. It’s saved in your macOS Keychain as “Bones Companion”.</span></div>
+                <div class="row"><span></span><span class="appbtn">Continue</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="step-head"><span class="seal" aria-hidden="true">2</span><h3><span class="sr-only">Step 2: </span>Connect your AI</h3></div>
+          <p class="step-text">Pick Claude, ChatGPT or Grok and paste an API key, which the app tests and keeps on your computer, or try Bones free.</p>
+        </li>
+        <li class="step">
+          <div class="step-art" aria-hidden="true">
+            <div class="gw" data-surface="game">
+              <p class="gw-title"><svg viewBox="0 0 200 200"><use href="#bones"/></svg>Bones</p>
+              <div class="gw-msg gw-you"><b>You</b>hi</div>
+              <div class="gw-msg gw-bones"><b>Bones</b>Hi! I'm Bones. Ask me where to go, what to do next, or whether that ring's an upgrade.</div>
+              <p class="gw-input">Ask Bones anything</p>
+            </div>
+          </div>
+          <div class="step-head"><span class="seal" aria-hidden="true">3</span><h3><span class="sr-only">Step 3: </span>Say hi in game</h3></div>
+          <p class="step-text">Let the app install its addon (on a Mac, allow Screen Recording too), then start WoW and say hi.</p>
+        </li>
+      </ol>
+      <p class="setup-note">Stuck anywhere? The app checks each part as it goes and names the fix.</p>
+    </div>
+  </section>
+
+  <section class="section cost" id="cost" aria-labelledby="cost-title">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Cost</p>
+        <h2 id="cost-title">What it costs</h2>
+        <p class="lead">Bones Companion is free and sets no limits of its own. You pay your AI company for what you use, and the chat window shows it as you go.</p>
+      </div>
+      <div class="plans">
+        <article class="plan plan-main" aria-labelledby="plan-key">
+          <p class="plan-tag">Recommended</p>
+          <h3 id="plan-key">Your API key</h3>
+          <p class="plan-for">Claude, ChatGPT or Grok</p>
+          <p class="plan-price"><span>about</span><b data-cost="day">$0.17–0.37</b><span>a day</span></p>
+          <p class="plan-note">That’s for a typical model such as Claude Haiku 4.5, at about 40 replies a day. <span data-cost="credit">$5 of credit lasts about 2–4 weeks</span>.</p>
+        </article>
+        <article class="plan" aria-labelledby="plan-free">
+          <h3 id="plan-free">Free models</h3>
+          <p class="plan-for">With a free OpenRouter account, no card</p>
+          <p class="plan-price"><b>$0</b><span>a day</span></p>
+          <p class="plan-note">50 requests a day. Free models may log your messages or use them for training, and the free models on offer change.</p>
+        </article>
+        <article class="plan" aria-labelledby="plan-local">
+          <h3 id="plan-local">A model on your computer</h3>
+          <p class="plan-for">Ollama or LM Studio</p>
+          <p class="plan-price"><b>$0</b><span>a day</span></p>
+          <p class="plan-note">Your messages stay on your computer. The model shares your graphics card with the game, so it can lower your frame rate.</p>
+        </article>
+      </div>
+      <div class="spend">
+        <div class="purse" aria-hidden="true">
+          <svg viewBox="0 0 200 200"><use href="#bones-happy"/></svg>
+          <p class="coin"><b>$0.18</b><span>today</span><span>23 messages</span></p>
+        </div>
+        <div>
+          <h3>You always see what you spend</h3>
+          <p>The chat window shows what you’ve spent today, so you know where you stand without leaving the game.</p>
+          <p>You can set a daily spend limit in the app, and a spend limit at your AI company too.</p>
+        </div>
+      </div>
+      <p class="fine">A Claude, ChatGPT or Grok subscription isn’t an API key and doesn’t include API credit. Prices are estimates; the app shows real figures.</p>
+    </div>
+  </section>
+
+  <section class="section privacy" id="privacy" aria-labelledby="privacy-title">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Privacy</p>
+        <h2 id="privacy-title">Nothing comes to us</h2>
+        <p class="lead">There’s no Bones Companion server. The app on your computer talks straight to the AI company you pick, and to GitHub to check for updates.</p>
+      </div>
+      <ul class="facts" role="list">
+        <li class="fact"><svg aria-hidden="true"><use href="#i-user-off"/></svg><h3>There’s no Bones Companion account</h3><p>Nothing to sign up for with us. The only account you might need is at your AI company.</p></li>
+        <li class="fact"><svg aria-hidden="true"><use href="#i-key"/></svg><h3>Your key stays on your computer</h3><p>It’s kept in your macOS Keychain or Windows Credential Manager and sent only to your AI company. It never goes into the game.</p></li>
+        <li class="fact"><svg aria-hidden="true"><use href="#i-eye-off"/></svg><h3>Nothing tracks you</h3><p>No analytics, telemetry or crash reports, in the app or on this page.</p></li>
+        <li class="fact"><svg aria-hidden="true"><use href="#i-hand"/></svg><h3>It never plays for you</h3><p>No key presses or mouse clicks, no memory reading, nothing posted to chat. The AI can only write text, which the addon turns into replies, routes and gear notes.</p></li>
+        <li class="fact"><svg aria-hidden="true"><use href="#i-list"/></svg><h3>You see every connection</h3><p>The app lists every connection it makes and shows exactly what it sent last.</p></li>
+        <li class="fact"><svg aria-hidden="true"><use href="#i-screen"/></svg><h3>The app reads one corner of the game</h3><p>The app reads only the small corner its addon draws in the game, so your messages go at once. On a Mac, that needs Screen Recording. You can <a href="#no-reading">use Bones without screen reading</a>.</p></li>
+      </ul>
+      <p class="names">By default, your character’s name, realm and guild stay out of what’s sent, and other players’ names are swapped for stand-ins.</p>
+    </div>
+  </section>
+
+  <section class="section download" id="download" aria-labelledby="download-title">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Download</p>
+        <h2 id="download-title">Get Bones Companion</h2>
+      </div>
+      <div class="send get">
+        <div class="get-mobile">
+          <p class="mobile-title">On your phone?</p>
+          <p>Bones Companion runs on a Mac or PC. Send yourself the link and pick it up at your computer.</p>
+          <div class="btns">
+            <a class="btn btn-gold" href="mailto:?subject=Bones%20Companion%2C%20to%20download%20on%20your%20Mac%20or%20PC&amp;body=Open%20this%20on%20your%20Mac%20or%20PC%20to%20download%20Bones%20Companion%3A%20https%3A%2F%2Ftommygeoco.github.io%2Fbones-companion-releases%2F"><svg aria-hidden="true"><use href="#i-mail"/></svg>Email yourself the link</a>
+            <button class="btn btn-ghost" type="button" data-copy hidden><svg aria-hidden="true"><use href="#i-link"/></svg><span>Copy link</span></button>
+            <button class="btn btn-ghost" type="button" data-share hidden><svg aria-hidden="true"><use href="#i-share"/></svg>Share</button>
+          </div>
+        </div>
+      </div>
+      <h3 class="sr-only">What you need</h3>
+      <ul class="needs" role="list">
+        <li><svg aria-hidden="true"><use href="#i-game"/></svg><div><b>World of Warcraft: Forever</b><span>Windowed or Windowed (Fullscreen) display mode.</span></div></li>
+        <li><svg aria-hidden="true"><use href="#i-computer"/></svg><div><b>A Mac or PC</b><span>macOS 14 or later, or Windows 10 or 11.</span></div></li>
+        <li><svg aria-hidden="true"><use href="#i-spark"/></svg><div><b>An AI</b><span>An API key from Anthropic, OpenAI, xAI or OpenRouter; OpenRouter’s free models; or a model on your computer.</span></div></li>
+      </ul>
+      <p class="release-line"><span data-text="release-line">Coming soon for macOS and Windows</span><span class="release-notes"> · <a data-href="release" href="https://github.com/tommygeoco/bones-companion-releases/releases">Release notes</a></span></p>
+      <div class="get-soon dl-soon">
+        <p class="soon-title">Coming soon</p>
+        <p><span class="soon-all">Bones Companion is almost ready for macOS and Windows.</span><span class="soon-win">Bones Companion for Windows is almost ready.</span><span class="soon-mac">Bones Companion for macOS is almost ready.</span> There’s no mailing list. GitHub can email you when it’s out.</p>
+        <p class="soon-other"><span class="soon-win">On a Mac? <a data-href="mac" href="https://github.com/tommygeoco/bones-companion-releases/releases/latest">Download for macOS</a></span><span class="soon-mac">On a PC? <a data-href="win" href="https://github.com/tommygeoco/bones-companion-releases/releases/latest">Download for Windows</a></span></p>
+        <div class="btns"><a class="btn btn-gold" href="https://github.com/tommygeoco/bones-companion-releases">Watch for it on GitHub</a><a class="btn btn-ghost" href="mailto:?subject=Bones%20Companion%2C%20coming%20soon&amp;body=Bones%20Companion%20is%20almost%20ready.%20Check%20back%20here%3A%20https%3A%2F%2Ftommygeoco.github.io%2Fbones-companion-releases%2F"><svg aria-hidden="true"><use href="#i-mail"/></svg>Email yourself the link</a></div>
+        <p class="soon-help">Watching needs a free GitHub account: click Watch, then Custom, pick Releases and click Apply.</p>
+      </div>
+      <div class="os-cards">
+        <article class="os-card os-mac" aria-labelledby="mac-title">
+          <div class="os-head"><h3 id="mac-title">macOS</h3><span class="yours">Your system</span></div>
+          <p class="os-req">macOS 14 or later, on Apple silicon or Intel.</p>
+          <div class="dl-card"><a class="btn btn-gold" data-href="mac" href="https://github.com/tommygeoco/bones-companion-releases/releases/latest"><svg aria-hidden="true" width="22" height="22"><use href="#i-download"/></svg>Download for macOS</a><span class="size" data-text="mac-size"></span></div>
+          <p class="soon-card"><b>Coming soon</b> The macOS version is almost ready.</p>
+          <p class="next-title">What happens next</p>
+          <ol class="next">
+            <li><span>Open the download and drag <b>Bones Companion</b> into Applications.</span></li>
+            <li><span>Open Bones Companion from Applications. If macOS asks whether you’re sure, click <b>Open</b>: Apple has checked it.</span></li>
+            <li><span>Setup walks you through the rest: connect your AI, allow Screen Recording, then say hi in game. The app reads only the small corner its addon draws in the game.</span></li>
+          </ol>
+        </article>
+        <article class="os-card os-win" aria-labelledby="win-title">
+          <div class="os-head"><h3 id="win-title">Windows</h3><span class="yours">Your system</span></div>
+          <p class="os-req">Windows 10 or 11.</p>
+          <div class="dl-card"><a class="btn btn-gold" data-href="win" href="https://github.com/tommygeoco/bones-companion-releases/releases/latest"><svg aria-hidden="true" width="22" height="22"><use href="#i-download"/></svg>Download for Windows</a><span class="size" data-text="win-size"></span></div>
+          <p class="soon-card"><b>Coming soon</b> The Windows version is almost ready.</p>
+          <p class="next-title">What happens next</p>
+          <ol class="next">
+            <li><span>If your browser asks whether to keep the file, click <b>Keep</b>.</span></li>
+            <li><span>Run the installer. If Windows says “Windows protected your PC”, click <b>More info</b>, then <b>Run anyway</b>: new apps show this until enough people install them, and the installer is signed.</span></li>
+            <li><span>Bones Companion opens in the system tray, and setup walks you through the rest: connect your AI, then say hi in game.</span></li>
+          </ol>
+        </article>
+      </div>
+      <p class="verify">Every release lists SHA-256 checksums. <a href="#check">How to check your download</a></p>
+      <p class="unofficial">Bones Companion is unofficial and not affiliated with Blizzard Entertainment.</p>
+    </div>
+  </section>
+
+  <section class="section faq parch" id="faq" aria-labelledby="faq-title">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Questions</p>
+        <h2 id="faq-title">Common questions</h2>
+      </div>
+      <div class="faq-list">
+        <details>
+          <summary>Can I use my Claude or ChatGPT subscription?</summary>
+          <div class="answer"><p>No. A Claude, ChatGPT or Grok subscription isn’t an API key and doesn’t include API credit. You need an API key from Anthropic, OpenAI or xAI with a little pay-as-you-go credit (<span data-cost="credit">$5 lasts about 2–4 weeks</span>), or you can try Bones free with OpenRouter’s free models.</p></div>
+        </details>
+        <details>
+          <summary>What does the app send to my AI?</summary>
+          <div class="answer"><p>Your message, your character’s game data (level, class, race, zone and position, money, experience, talents, professions, quests and gear) and the app’s short notes on your progress. You can leave the game data out of any message. Your character’s name, realm and guild stay out unless you turn them on, other players’ names are swapped for stand-ins, and other players’ chat is never read.</p></div>
+        </details>
+        <details>
+          <summary>Is my API key safe?</summary>
+          <div class="answer"><p>Your key is kept in your macOS Keychain or Windows Credential Manager and sent only to the AI company it belongs to. It never goes into the game, to us or into logs.</p><p>Also set a spend limit at your AI company. If a key ever leaks, that limit is what stops the bill.</p></div>
+        </details>
+        <details>
+          <summary>Does Bones play for me?</summary>
+          <div class="answer"><p>No. Bones Companion never presses keys, moves the mouse, reads the game’s memory or posts to chat. The AI can only write text, which the addon turns into replies, routes and gear notes. Bones answers your messages, and speaks first only for check-ins, which you turn on.</p></div>
+        </details>
+        <details id="no-reading">
+          <summary>Can I use Bones without screen reading?</summary>
+          <div class="answer"><p>Yes. Turn off Screen Reading in the addon’s Settings (under What Bones Knows): nothing is drawn; your messages wait for a reload, and replies still come in. To send a waiting message, click Reload above the window. The game shows a short loading screen, and it can’t reload during a fight.</p></div>
+        </details>
+        <details>
+          <summary>Is Bones Companion allowed?</summary>
+          <div class="answer"><p>Bones Companion is unofficial: Blizzard hasn’t made, reviewed or endorsed it. It reads the small corner its addon draws in the game and writes addon files, and it never controls your character. Blizzard’s rules are Blizzard’s to apply, so use it at your own risk.</p></div>
+        </details>
+        <details id="check">
+          <summary>How do I check my download?</summary>
+          <div class="answer"><p>Every release lists a SHA-256 checksum for each file in <a class="sums-inline" data-href="sums" href="https://github.com/tommygeoco/bones-companion-releases/releases">SHA256SUMS.txt</a><span class="sums-plain">SHA256SUMS.txt</span>. On a Mac, open Terminal, type <code>shasum -a 256</code> and a space, drag the file into the window and press Enter. On Windows, open PowerShell, type <code>Get-FileHash -Algorithm SHA256</code> and a space, drag the file into the window and press Enter. The checksum it prints should match the file’s line in SHA256SUMS.txt (Windows prints it in capital letters; that still matches).</p><p>On Windows, right-click the installer, click Properties, then the Digital Signatures tab to see who signed it. On a Mac, macOS confirms Apple has checked the app the first time you open it.</p></div>
+        </details>
+        <details>
+          <summary>Which version of WoW does it work with?</summary>
+          <div class="answer"><p>World of Warcraft: Forever, in Windowed or Windowed (Fullscreen) mode. Other versions of WoW aren’t supported.</p></div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section class="section closing" aria-labelledby="closing-title">
+    <div class="wrap closing-in">
+      <div class="rune-rule" aria-hidden="true"><svg><use href="#rune"/></svg></div>
+      <svg class="big" viewBox="0 0 200 200" aria-hidden="true"><use href="#bones"/></svg>
+      <h2 id="closing-title">Ready when you are</h2>
+      <p class="quote">“I’ll be by your quest tracker. Say hi when you get there.”<cite>Bones</cite></p>
+      <div class="get">
+        <div class="dl-row">
+          <a class="btn btn-gold btn-dl dl dl-mac" data-href="mac" href="https://github.com/tommygeoco/bones-companion-releases/releases/latest"><svg aria-hidden="true"><use href="#i-download"/></svg><span class="btn-label">Download for macOS</span><span class="btn-meta" data-text="mac-meta">Free · macOS 14 or later</span></a>
+          <a class="btn btn-gold btn-dl dl dl-win" data-href="win" href="https://github.com/tommygeoco/bones-companion-releases/releases/latest"><svg aria-hidden="true"><use href="#i-download"/></svg><span class="btn-label">Download for Windows</span><span class="btn-meta" data-text="win-meta">Free · Windows 10 or 11</span></a>
+        </div>
+        <p class="get-other"><span class="other-win"><a data-href="win" href="https://github.com/tommygeoco/bones-companion-releases/releases/latest">Download for Windows</a> · </span><span class="other-mac"><a data-href="mac" href="https://github.com/tommygeoco/bones-companion-releases/releases/latest">Download for macOS</a> · </span><span class="other-win-soon">Windows version coming soon · </span><span class="other-mac-soon">macOS version coming soon · </span><span class="more"><a href="#download">All downloads</a></span></p>
+        <div class="get-soon">
+          <p class="soon-title">Coming soon</p>
+          <p><span class="soon-all">Bones Companion is almost ready for macOS and Windows.</span><span class="soon-win">Bones Companion for Windows is almost ready.</span><span class="soon-mac">Bones Companion for macOS is almost ready.</span> There’s no mailing list. GitHub can email you when it’s out.</p>
+          <p class="soon-other"><span class="soon-win">On a Mac? <a data-href="mac" href="https://github.com/tommygeoco/bones-companion-releases/releases/latest">Download for macOS</a></span><span class="soon-mac">On a PC? <a data-href="win" href="https://github.com/tommygeoco/bones-companion-releases/releases/latest">Download for Windows</a></span></p>
+          <div class="btns"><a class="btn btn-gold" href="https://github.com/tommygeoco/bones-companion-releases">Watch for it on GitHub</a><a class="btn btn-ghost" href="mailto:?subject=Bones%20Companion%2C%20coming%20soon&amp;body=Bones%20Companion%20is%20almost%20ready.%20Check%20back%20here%3A%20https%3A%2F%2Ftommygeoco.github.io%2Fbones-companion-releases%2F"><svg aria-hidden="true"><use href="#i-mail"/></svg>Email yourself the link</a></div>
+          <p class="soon-help">Watching needs a free GitHub account: click Watch, then Custom, pick Releases and click Apply.</p>
+        </div>
+        <div class="get-mobile">
+          <p class="mobile-title">Bones Companion runs on a Mac or PC</p>
+          <div class="btns">
+            <a class="btn btn-gold" href="mailto:?subject=Bones%20Companion%2C%20to%20download%20on%20your%20Mac%20or%20PC&amp;body=Open%20this%20on%20your%20Mac%20or%20PC%20to%20download%20Bones%20Companion%3A%20https%3A%2F%2Ftommygeoco.github.io%2Fbones-companion-releases%2F"><svg aria-hidden="true"><use href="#i-mail"/></svg>Email yourself the link</a>
+            <button class="btn btn-ghost" type="button" data-copy hidden><svg aria-hidden="true"><use href="#i-link"/></svg><span>Copy link</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-in">
+    <div class="foot-top">
+      <a class="brand" href="#main"><svg aria-hidden="true"><use href="#bones"/></svg><span class="brand-name">Bones Companion</span></a>
+      <p class="notaff">Bones Companion is unofficial and not affiliated with Blizzard Entertainment.</p>
+    </div>
+    <ul aria-label="Project links">
+      <li><a href="https://github.com/tommygeoco/bones-companion-releases/releases">Releases on GitHub</a></li>
+      <li class="sums-link"><a data-href="sums" href="https://github.com/tommygeoco/bones-companion-releases/releases">Checksums (SHA256SUMS.txt)</a></li>
+      <li><a href="https://github.com/chelinho139/wow-ai">Built on wow-ai (MIT)</a></li>
+      <li><a href="assets/fonts/OFL-Alegreya.txt">Alegreya font license</a></li>
+      <li><a href="assets/fonts/OFL-Alegreya-Sans.txt">Alegreya Sans font license</a></li>
+      <li><a href="assets/fonts/OFL-Cinzel.txt">Cinzel font license</a></li>
+    </ul>
+    <p class="legal">World of Warcraft, Warcraft and Blizzard Entertainment are trademarks or registered trademarks of Blizzard Entertainment, Inc. in the U.S. and/or other countries. Bones Companion is unofficial and is not affiliated with or endorsed by Blizzard Entertainment, Anthropic, OpenAI, Google, xAI or OpenRouter. Other names are the trademarks of their owners and are used only to say which service you can connect. This page uses no cookies, analytics or trackers.</p>
+  </div>
+</footer>
+</body>
+</html>
